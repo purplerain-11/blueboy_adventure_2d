@@ -18,6 +18,7 @@ public class Player extends Entity {
         getPlayerImage();
     }
     public void setDefaultValues() {
+        //set players default position
         x = 100;
         y = 100;
         speed = 4;
