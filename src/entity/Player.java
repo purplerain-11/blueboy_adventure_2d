@@ -5,25 +5,33 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        // this works best for our current character (might change on new character, will see)
+        solidArea = new Rectangle(8, 16, 32, 32);
+
         setDefaultValues();
         getPlayerImage();
     }
     public void setDefaultValues() {
         //set players default position
-        x = 100;
-        y = 100;
+        worldX =gp.tileSize * 23;
+        worldY = gp.tileSize * 21;
         speed = 4;
         direction = "down";
     }
+
     public void getPlayerImage() {
         try {
             up1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/boy_up_1.png"));
@@ -38,21 +46,30 @@ public class Player extends Entity {
             e.printStackTrace();
         }
     }
+
     public void update() {
         if (keyH.upPressed || keyH.downPressed
                 || keyH.leftPressed || keyH.rightPressed) {
             if (keyH.upPressed) {
                 direction = "up";
-                y -= speed;
             } else if (keyH.downPressed) {
                 direction = "down";
-                y += speed;
             } else if (keyH.leftPressed) {
                 direction = "left";
-                x -= speed;
             } else if (keyH.rightPressed) {
                 direction = "right";
-                x += speed;
+            }
+            //check tile collision
+            collisionOn = false;
+            gp.cChecker.checkTile(this);
+
+            if(!collisionOn) {
+                switch (direction) {
+                    case "up": worldY -= speed; break;
+                    case "down": worldY += speed; break;
+                    case "left": worldX -= speed; break;
+                    case "right": worldX += speed; break;
+                }
             }
             //every frame the counter is updated on keypress, once it hits value (eg: 12) basically we change the player image in 10 frames to animate
             spriteCounter++;
@@ -66,6 +83,7 @@ public class Player extends Entity {
             }
         }
     }
+
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
@@ -104,6 +122,6 @@ public class Player extends Entity {
                 break;
         }
 
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
     }
 }
