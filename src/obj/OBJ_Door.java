@@ -1,6 +1,7 @@
 package obj;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Objects;
 
 public class OBJ_Door extends SuperObject {
 
@@ -8,7 +9,7 @@ public class OBJ_Door extends SuperObject {
         name = "Door";
 
         try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/door.png"));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("objects/door.png")));
         } catch(IOException e) {
             e.printStackTrace();
         }
