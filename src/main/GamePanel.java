@@ -11,24 +11,29 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
+
     //16 tiles horizontally and 12 vertically
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
     public final int screenWidth = tileSize * maxScreenCol; //768 pixels
     public final int screenHeight = tileSize * maxScreenRow; //576 pixels
+
     //world settings
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+
     //FPS
     int FPS = 60;
 
+    //system
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
-    Thread gameThread;
+    Sound sound = new Sound();
     public CollisionDetector cChecker = new CollisionDetector(this);
     public AssetSetter aSetter = new AssetSetter(this);
+    Thread gameThread;
+
+    //entity and object
     public Player player = new Player(this, keyH);
     public SuperObject[] obj = new SuperObject[10];
 
@@ -42,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     //we want to call this method to set up the objects before the game starts
     public void setUpGame() {
         aSetter.setObject();
+        playMusic(0);
     }
 
     public void startGameThread() {
@@ -101,5 +107,20 @@ public class GamePanel extends JPanel implements Runnable {
         //player
         player.draw(g2);
         g2.dispose();
+    }
+
+    public void playMusic(int index) {
+        sound.setFile(index);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSE(int index) {
+        sound.setFile(index);
+        sound.play();
     }
 }
